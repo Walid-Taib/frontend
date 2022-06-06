@@ -2,10 +2,8 @@ import React ,{Component} from "react";
 import {Navbar, NavbarBrand} from 'reactstrap'
 import '../App.css'
 import MenuComponent from "./MenuComponent";
-import { DISHES } from "../shared/dishes";
-import { LEADERS } from "../shared/leaders";
-import { PROMOTIONS } from "../shared/promotions";
-import { COMMENTS } from "../shared/comments";
+import { addComment } from '../redux/ActionCreators';
+
 import Item from "./ItemComponent";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
@@ -14,6 +12,14 @@ import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import About from "./AboutComponent";
 import { connect } from "react-redux";
+
+
+
+const mapDispatchToProps = dispatch => ({
+  
+  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment))
+
+});
 
 
 const mapStateToProps=state=>{
@@ -29,18 +35,14 @@ class MainComponent extends Component{
   constructor(props) {
     super(props);
 
-    this.state = {
-      dishes: DISHES,
-      comments: COMMENTS,
-      promotions: PROMOTIONS,
-      leaders: LEADERS
-    };
+
   } 
       render() {
         const DishWithId = ({match}) => {
           return(
-              <Item dish={this.props.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
-                comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} />
+              <Item dish={this.props.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]}
+              comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))}
+              addComment={this.props.addComment}/>
           );
         };
         const HomePage = () => {
@@ -70,5 +72,5 @@ class MainComponent extends Component{
     
     
 
-export default withRouter(connect(mapStateToProps)(MainComponent));
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(MainComponent));
 

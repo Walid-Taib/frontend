@@ -5,6 +5,7 @@ import { Card, CardImg, CardText, CardBody,
 import { Link } from 'react-router-dom';
 
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { compose } from "redux";
 
 
 const required = (val) => val && val.length;
@@ -13,16 +14,116 @@ const minLength = (len) => (val) => val && (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
 const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 
+
+class Commentform extends Component{
+    constructor(props){
+        super(props)
+        this.state={
+            isModalOpen:false
+        }
+        this.handleModal=this.handleModal.bind(this);
+        this.handleSubmit=this.handleSubmit.bind(this)
+    }
+
+    handleModal(){
+        this.setState({isModalOpen:!this.state.isModalOpen})
+    }
+    handleSubmit(values){
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+
+    }
+
+
+    render(){
+        return(
+            <div>
+                <Button onClick={this.handleModal}>add Comment</Button>
+
+                <Modal isOpen={this.state.isModalOpen} toggle={this.handleModal}>
+                <ModalHeader toggle={this.handleModal}>Submit a Comment</ModalHeader>
+                <ModalBody>
+                    <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                            <Row className="form-group">
+                                <Label htmlFor="YourName" md={12}>Your Name</Label>
+                                <Col md={12}>
+                                    <Control.text model=".YourName" id="YourName" name="YourName"
+                                        placeholder="Your Name"
+                                        className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15)
+                                        }}
+                                        />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".YourName"
+                                        show="touched"
+                                        comments={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 2 characters',
+                                            maxLength: 'Must be 15 characters or less'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                            <Row className="form-group">
+                                <Label md={12}>Rating</Label>
+                                <Col md={12}>
+                                    <Control.select model=".rating" name="rating"
+                                        className="form-control">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                    </Control.select>
+                                </Col>
+                            </Row>
+                            <Row className="form-group">
+                                <Label htmlFor="comment" md={12}>Your comment</Label>
+                                <Col md={12}>
+                                    <Control.textarea model=".comment" id="comment" name="comment"
+                                        rows="6"
+                                        className="form-control" />
+                                </Col>
+                            </Row>
+                            <Row className="form-group">
+                                <Col md={{size:12, offset: 2}}>
+                                    <Button type="submit" color="primary">
+                                    Submit comment
+                                    </Button>
+                                </Col>
+                            </Row>
+                    </LocalForm>
+
+                </ModalBody>
+                </Modal>
+            </div>
+
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Item extends Component{
     constructor(props){
         super(props);
 
 
-        this.state={
-            isModalOpen:false
-        };
+
         this.handleSubmit=this.handleSubmit.bind(this)
-        this.handleModal=this.handleModal.bind(this)
     }
 
     handleSubmit(values){
@@ -30,9 +131,7 @@ class Item extends Component{
         alert("Current state is : " + JSON.stringify(values))
     }
 
-    handleModal(){
-        this.setState({isModalOpen:!this.state.isModalOpen})
-    }
+ 
 
 
 
@@ -57,7 +156,7 @@ class Item extends Component{
             )
         }
     }
-    renderComments=(comments)=>{
+    renderComments=(comments , addComment, dishId )=>{
         console.log('comments')
         if(comments){  
             const list =comments.map((comment)=>{
@@ -72,6 +171,7 @@ class Item extends Component{
                 <div>
                     <h1>Comments</h1>
                     {list}
+                    <Commentform dishId={dishId} addComment={addComment}/>
                 </div>
             )
         }
@@ -83,65 +183,7 @@ class Item extends Component{
     render(){
         return (
             <div className="container">
-                <Modal isOpen={this.state.isModalOpen} toggle={this.handleModal}>
-                    <ModalHeader toggle={this.handleModal}>Submit a Comment</ModalHeader>
-                    <ModalBody>
-                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
-                                <Row className="form-group">
-                                    <Label htmlFor="YourName" md={12}>Your Name</Label>
-                                    <Col md={12}>
-                                        <Control.text model=".YourName" id="YourName" name="YourName"
-                                            placeholder="Your Name"
-                                            className="form-control"
-                                            validators={{
-                                                required, minLength: minLength(3), maxLength: maxLength(15)
-                                            }}
-                                            />
-                                        <Errors
-                                            className="text-danger"
-                                            model=".YourName"
-                                            show="touched"
-                                            comments={{
-                                                required: 'Required',
-                                                minLength: 'Must be greater than 2 characters',
-                                                maxLength: 'Must be 15 characters or less'
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
 
-
-                                <Row className="form-group">
-                                    <Label md={12}>Rating</Label>
-                                    <Col md={12}>
-                                        <Control.select model=".rating" name="rating"
-                                            className="form-control">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                        </Control.select>
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Label htmlFor="comment" md={12}>Your comment</Label>
-                                    <Col md={12}>
-                                        <Control.textarea model=".comment" id="comment" name="comment"
-                                            rows="6"
-                                            className="form-control" />
-                                    </Col>
-                                </Row>
-                                <Row className="form-group">
-                                    <Col md={{size:12, offset: 2}}>
-                                        <Button type="submit" color="primary">
-                                        Submit comment
-                                        </Button>
-                                    </Col>
-                                </Row>
-                        </LocalForm>
-
-                    </ModalBody>
-                </Modal>
             <div className="row">
 
                 <Breadcrumb>
@@ -159,8 +201,7 @@ class Item extends Component{
                     {this.renderDish(this.props.dish)}
                 </div>
                 <div className="col-12 col-md-5 m-1">
-                    {this.renderComments(this.props.comments)}
-                    <Button onClick={this.handleModal}>add Comment</Button>
+                    {this.renderComments(this.props.comments,this.props.addComment,this.props.dish.id)}
                 </div>
             </div>
             </div>
