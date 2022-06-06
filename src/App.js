@@ -1,6 +1,9 @@
 import './App.css';
 import React ,{Component} from 'react';
 import MainComponent from './components/MainComponent';
+
+import { BrowserRouter } from 'react-router-dom';
+
 class App extends Component {
   constructor(props){
     super(props)
@@ -8,7 +11,12 @@ class App extends Component {
 
   render(){
     return (
-      <MainComponent/>
+      <BrowserRouter>
+        <div className='App'>
+        <MainComponent/>
+
+        </div>
+      </BrowserRouter>
 
     );
   }
