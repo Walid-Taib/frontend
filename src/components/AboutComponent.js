@@ -1,25 +1,47 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Loading } from './LoadingComponent';
+
+
+
+function RenderLeaders({leaders , isLoading , errMess}){
+    if(leaders){
+        const Leaders = leaders.map((leader) => {
+            return (
+                <div key={leader.id} className="col-12 mt-5">
+                <Media tag="li">
+                 <Media left middle>
+                   <Media object src={leader.image} alt={leader.name} />
+                 </Media>
+                 <Media body className="ml-5">
+                  <Media heading>{leader.name}</Media>
+                  <p>{leader.designation}</p>
+                  <p>{leader.description}</p>
+                 </Media>
+                </Media>
+               </div>
+            );
+        });
+    return Leaders
+    }
+    if(isLoading){
+        console.log('loading')
+        return(<Loading/>)
+    }
+    if(errMess){
+        console.log(errMess)
+        return(<h4>errmess</h4>)
+    }
+}
+
+
 
 function About(props) {
 
-    const leaders = props.leaders.map((leader) => {
-        return (
-            <div key={leader.id} className="col-12 mt-5">
-            <Media tag="li">
-             <Media left middle>
-               <Media object src={leader.image} alt={leader.name} />
-             </Media>
-             <Media body className="ml-5">
-              <Media heading>{leader.name}</Media>
-              <p>{leader.designation}</p>
-              <p>{leader.description}</p>
-             </Media>
-            </Media>
-           </div>
-        );
-    });
+
+
+
 
     return(
         <div className="container">
@@ -77,7 +99,7 @@ function About(props) {
                 </div>
                 <div className="col-12">
                     <Media list>
-                        {leaders}
+                        <RenderLeaders isLoading={props.isLoading}  leaders={props.leaders}  errMess={ props.errMess}/>
                     </Media>
                 </div>
             </div>
