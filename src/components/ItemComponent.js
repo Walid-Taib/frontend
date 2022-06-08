@@ -28,7 +28,7 @@ class Commentform extends Component{
         this.setState({isModalOpen:!this.state.isModalOpen})
     }
     handleSubmit(values){
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
 
     }
 
@@ -156,7 +156,7 @@ class Item extends Component{
             )
         }
     }
-    renderComments=(comments , addComment, dishId )=>{
+    renderComments=(comments , postComment, dishId )=>{
         console.log('comments')
         if(comments){  
             const list =comments.map((comment)=>{
@@ -171,7 +171,7 @@ class Item extends Component{
                 <div>
                     <h1>Comments</h1>
                     {list}
-                    <Commentform dishId={dishId} addComment={addComment}/>
+                    <Commentform dishId={dishId} postComment={postComment}/>
                 </div>
             )
         }
@@ -221,7 +221,7 @@ class Item extends Component{
                     {this.renderDish(this.props.dish)}
                 </div>
                 <div className="col-12 col-md-5 m-1">
-                    {this.renderComments(this.props.comments,this.props.addComment,this.props.dish.id)}
+                    {this.renderComments(this.props.comments,this.props.postComment,this.props.dish.id)}
                 </div>
             </div>
             </div>
